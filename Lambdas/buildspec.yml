@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8  
+
+  pre_build:
+    commands:
+      - echo Running tests...
+
+  build:
+    commands:
+      - ls
+      - echo Building Lambda function 1...
+      - cd lambda/lf1
+      - pip install -r requirements.txt -t ./
+      - zip -r ../index-photos.zip *
+      - aws s3 cp ../index-photos.zip s3://$sk11239-codepipelinesample
+      - cd ../lf2
+      - pip install -r requirements.txt -t ./
+      - zip -r ../index-photos-LF2.zip *
+      - aws s3 cp ../index-photos-LF2.zip s3://$sk11239-codepipelinesample
+
+artifacts:
+  files:
+    - lambda/index-photos.zip
+    - lambda/index-photos-LF2.zip
+    - other/cloudFormation.yml
+
